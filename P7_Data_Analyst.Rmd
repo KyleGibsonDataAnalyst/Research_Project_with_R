@@ -1,0 +1,301 @@
+---
+title: "P7_Data_Analyst"
+author: "Kyle Gibson"
+date: "22/09/2022"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+  word_document: default
+---
+
+```{r}
+
+library(readxl)   # Reading in packages
+library(plotrix)
+library(dplyr)
+library(ggplot2)
+library(gridExtra)
+library(gridBase)
+library(gridGraphics)
+
+getwd()           # Checking working directory
+
+d1 <- read_excel("C:/P7/Manual_field_strata_data.xlsx")   # Importing raw data 
+
+d2 <- read_excel("C:/P7/Strata_3Dmodel_clast_data.xlsx")
+
+d3 <- read_excel("C:/P7/3D_data_strata_2.xlsx")
+
+d4 <- read_excel("C:/P7/clast_data_1,2,3.xlsx") 
+
+head(d1)  # Viewing first 6 rows of data
+View(d1)   # Viewing entire dataset
+summary(d2)  # Viewing summary statistics
+summary(d1)
+# d1 = field data
+
+
+##### Using ggplot to assign plots to variables 
+
+p1 <- qplot(d1$ClastLength, d1$`Clast Width`, col=d1$Strata, xlab = "Clast length (mm)", ylab = "Clast width (mm)", ylim = c(0,40), xlim = c(0,80))+labs(colour="Strata")+ annotate(geom="text", x=40, y=40, label="A",
+              color="black")+ scale_color_manual(values = c("green", "black", "orange", "red", "blue", "yellow"))+
+  geom_point(size = 1)+ theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14), legend.position="none")   
+
+                             
+
+
+p2 <- qplot(d1$Strata, d1$ClastSize, col=d1$Strata, xlab = "Strata", ylab = "Clast size (mm\u00B2)", ylim = c(0,1600))+labs(colour="Strata")+ annotate(geom="text", x=3.5, y=1600, label="B",
+              color="black")+ scale_color_manual(values = c("green", "black", "orange", "red", "blue", "yellow"))+
+  geom_point(size = 1)+ theme_bw()+ theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14), legend.position="none")
+
+
+
+# D2 = 3D model data
+
+
+p3 <- qplot(d2$Strata, d2$clastsize, col=d2$Strata, xlab = "Strata", ylab = "Clast size (mm\u00B2)", ylim = c(0,1600))+labs(colour="Strata")+ annotate(geom="text", x=3.5, y=1600, label="D",
+              color="black")+ scale_color_manual(values = c("green", "black", "orange", "red", "blue", "yellow"))+
+  geom_point(size = 2)+ theme_bw()+ theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14), legend.position="none")
+
+
+
+p4 <- qplot(d2$clastlength, d2$clastwidth, col=d2$Strata, xlab = "Clast length (mm)", ylab = "Clast width (mm)", ylim = c(0,40), xlim = c(0,80))+labs(colour="Strata")+ annotate(geom="text", x=40, y=40, label="C",
+              color="black")+ scale_color_manual(values = c("green", "black", "orange", "red", "blue", "yellow"))+
+  geom_point(size = 2)+ theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14), legend.position="none")
+
+
+
+##### Creating plots with a best fit line                                                                       
+
+bfd1 <- qplot(d1$ClastLength, d1$`Clast Width`, xlab = "Clast length (mm)", ylab = "Clast width (mm)", ylim = c(0,40), xlim = c(0,80))+labs(colour="Strata")+ annotate(geom="text", x=25, y=40, label=expression("A               R-squared: 0.4195                P-value: 1.343"^"-8"), color="black")+ scale_color_manual(values = c("green", "black", "orange", "red", "blue", "yellow"))+
+  geom_point(size = 2)+ theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14), legend.position="none")+ geom_smooth(method = "lm", se = FALSE, col = "red")
+
+
+bfd2 <- qplot(d3$clastlength, d3$clastwidth, xlab = "Clast length (mm)", ylab = "Clast width (mm)", ylim = c(0,40), xlim = c(0,80))+ annotate(geom="text", x=25, y=40, label=expression("B               R-squared: 0.4519                P-value: 2.459"^"-9"),
+              color="black")+ scale_color_manual(values = c("green", "black", "orange", "red", "blue", "yellow"))+
+  geom_point(size = 2)+ theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14), legend.position="none")+ geom_smooth(method = "lm", se = FALSE, col = "red")
+
+
+grid.arrange(bfd1, bfd2, nrow = 2)  # Viewing plots in plotting window
+
+summary(lm(d1$ClastLength ~ d1$`Clast Width`)) # r-squared  0.4195  p-value 1.343e-08      # Checking values to ensure accuracy
+summary(lm(d3$clastlength ~ d3$clastwidth)) # r-squared  0.4519 p-value 2.459^-9
+summary(d1)
+summary(d3)    # Viewing summary statistics
+
+
+grid.arrange(p3, p4, nrow = 2)               # Viewing plots in plotting window
+grid.arrange(p1, p2, p4, p3, nrow = 2)
+
+
+##### Creating plots using ggplot and assigning them to variables
+
+p5 <- qplot(d4$Strata, d4$clastsize, col=d4$Strata, xlab = "strata", ylab = "Clast size (mm\u00B2)", ylim = c(0,1600))+labs(colour="Strata")+ annotate(geom="text", x=3.5, y=1600, label="D",
+              color="black")+ scale_color_manual(values = c("green", "black", "orange", "red", "blue", "yellow"))+
+  geom_point(size = 1)+ theme_bw()+ theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14), legend.position="none")
+
+
+
+p6 <- qplot(d4$clastlength, d4$clastwidth, col=d4$Strata, xlab = "Clast length (mm)", ylab = "Clast width (mm)", ylim = c(0,40), xlim = c(0,80))+labs(colour="Strata")+ annotate(geom="text", x=40, y=40, label="C",
+              color="black")+ scale_color_manual(values = c("green", "black", "orange", "red", "blue", "yellow"))+
+  geom_point(size = 1)+ theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14), legend.position="none")
+
+grid.arrange(p5, p6, nrow = 2)  # Viewing plots
+
+boxplot(d4$clastsize ~ d4$Strata, ylim = c(0,2000), col = "light blue", ylab = "Clast size (mm\u00B2)", xlab = "Strata", cex.lab = 1.5)
+hist(d4$clastsize)  # Quick plots for visual exploration of data
+
+library("gridExtra", lib.loc="~/R/win-library/3.5")  # Reading package
+grid.arrange(p1, p4, nrow = 2)
+grid.arrange(p2, p3, nrow = 2)          # Arranging plots
+p5 <- grid.arrange(p1, p2, p4, p3, nrow = 2)  # Viewing plots
+
+##### Viewing summary statistics of data for each stratum
+
+summary(d4)
+
+summary(d1$ClastSize[d1$Strata=="s2"])
+summary(d1$ClastSize[d1$Strata=="s3"])
+summary(d1$ClastSize[d1$Strata=="s4"])
+summary(d1$ClastSize[d1$Strata=="s5"])
+summary(d1$ClastSize[d1$Strata=="s6"])
+summary(d1$ClastSize[d1$Strata=="s7"])
+
+
+summary(d4$clastsize[d4$Strata=="s2"])
+summary(d4$clastsize[d4$Strata=="s3"])
+summary(d4$clastsize[d4$Strata=="s4"])
+summary(d4$clastsize[d4$Strata=="s5"])
+summary(d4$clastsize[d4$Strata=="s6"])
+summary(d4$clastsize[d4$Strata=="s7"])
+
+
+
+##### Calling mean, median and summary statistics
+
+mean(d1$ClastLength)
+mean(d2$clastlength)
+mean(d1$`Clast Width`)
+mean(d2$clastwidth)
+mean(d1$ClastSize)
+mean(d2$clastsize)
+median(d1$ClastSize)
+median(d2$clastsize)
+summary(d1)
+summary(d2)
+
+d5 <- read_excel("C:/P7/Longrock_clast_sizes.xlsx")  # Importing raw data
+
+##### Assigning plots to variables using ggplot
+
+p7 <- qplot(d5$strata, d5$clastsize, col=d5$strata, xlab = "strata", ylab = "Clast size (mm\u00B2)")+labs(colour="Strata")+ annotate(geom="text", x=3.5, y=1800, label="B",
+              color="black")+ scale_color_manual(values = c("green", "black", "red"))+
+  geom_point(size = 2)+ theme_bw()+ theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14), legend.position="none")
+
+
+
+p8 <- qplot(d5$clastlength, d5$clastwidth, col=d5$strata, xlab = "Clast length (mm)", ylab = "Clast width (mm)")+labs(colour="Strata")+ annotate(geom="text", x=55, y=40, label="A",
+              color="black")+ scale_color_manual(values = c("green", "black", "red"))+
+  geom_point(size = 2)+ theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14), legend.position="none")
+
+grid.arrange(p8, p7, nrow = 2) # Viewing plots
+
+##### Assigning plot 
+
+bfd5 <- qplot(d5$clastlength, d5$clastwidth, xlab = "Clast length (mm)", ylab = "Clast width (mm)")+labs(colour="Strata")+ annotate(geom="text", x=25, y=40, label=expression("               R-squared: 0.5397                P-value: 2.291"^"-6"), color="black")+ scale_color_manual(values = c("green", "black", "orange", "red", "blue", "yellow"))+
+  geom_point(size = 2)+ theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14), legend.position="none")+ geom_smooth(method = "lm", se = FALSE, col = "red")
+
+plot(bfd5) # Viewing plot
+
+summary(lm(d5$clastlength~d5$clastwidth)) # Viewing summary statistics
+summary(d5)
+summary(d5$clastsize[d5$strata=="s1"])
+summary(d5$clastsize[d5$strata=="s2"])
+summary(d5$clastsize[d5$strata=="s3"])
+
+d6 <- read_excel("C:/P7/Smallrock_clast_sizes.xlsx") # Importing raw data
+
+##### Assigning plots
+
+p9 <- qplot(d6$strata, d6$clastsize, col=d6$strata, xlab = "strata", ylab = "Clast size (mm\u00B2)")+labs(colour="Strata")+ annotate(geom="text", x=3.4, y=1600, label="B",
+              color="black")+ scale_color_manual(values = c("green", "black", "red"))+
+  geom_point(size = 2)+ theme_bw()+ theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14), legend.position="none")
+
+
+
+p10 <- qplot(d6$clastlength, d6$clastwidth, col=d6$strata, xlab = "Clast length (mm)", ylab = "Clast width (mm)")+labs(colour="Strata")+ annotate(geom="text", x=45, y=40, label="A",
+              color="black")+ scale_color_manual(values = c("green", "black", "red"))+
+  geom_point(size = 2)+ theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14), legend.position="none")
+
+grid.arrange(p10, p9, nrow = 2) # Viewing plots
+
+
+##### Assigning plot
+
+bfd6 <- qplot(d5$clastlength, d5$clastwidth, xlab = "Clast length (mm)", ylab = "Clast width (mm)")+labs(colour="Strata")+ annotate(geom="text", x=25, y=40, label=expression("               R-squared: 0.5487                P-value: 1.73"^"-6"), color="black")+ scale_color_manual(values = c("green", "black", "orange", "red", "blue", "yellow"))+
+  geom_point(size = 2)+ theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14), legend.position="none")+ geom_smooth(method = "lm", se = FALSE, col = "red")
+
+plot(bfd6) # Viewing plot
+
+summary(lm(d6$clastlength~d6$clastwidth)) # Viewing summary statistics
+summary(d6$clastsize[d6$strata=="s1"])
+summary(d6$clastsize[d6$strata=="s2"])
+summary(d6$clastsize[d6$strata=="s3"])
+
+d7 <- read_excel("C:/P7/Large_model_clast_sizes.xlsx")  # Importing raw data
+
+##### Assigning plots
+
+p11 <- qplot(d7$strata, d7$clastsize, col=d7$strata, xlab = "strata", ylab = "Clast size (mm\u00B2)")+labs(colour="Strata")+ annotate(geom="text", x=0.5, y=49000, label="B",
+              color="black")+ scale_color_manual(values = c("lightblue", "black"))+
+  geom_point(size = 2)+ theme_bw()+ theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14), legend.position="none")
+
+
+
+p12 <- qplot(d7$clastlength, d7$clastwidth, col=d7$strata, xlab = "Clast length (mm)", ylab = "Clast width (mm)")+labs(colour="Strata")+ annotate(geom="text", x=40, y=175, label="A",
+              color="black")+ scale_color_manual(values = c("lightblue", "black"))+
+  geom_point(size = 2)+ theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14), legend.position="none")
+
+grid.arrange(p12, p11, nrow = 2) # Viewing plots
+
+##### Assigning plot
+
+bfd1 <- qplot(d7$clastlength, d7$clastwidth, xlab = "Clast length (mm)", ylab = "Clast width (mm)")+labs(colour="Strata")+ annotate(geom="text", x=100, y=200, label=expression("               R-squared: 0.7215                P-value: 1.316"^"-6"), color="black")+ scale_color_manual(values = c("green", "black", "orange", "red", "blue", "yellow"))+
+  geom_point(size = 2)+ theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14), legend.position="none")+ geom_smooth(method = "lm", se = FALSE, col = "red")
+
+plot(bfd1) # Viewing plot
+
+summary(lm(d7$clastlength~d7$clastwidth))   # Viewing summary statistics
+summary(d7$clastsize[d7$strata=="s1"])
+summary(d7$clastsize[d7$strata=="s2"])
+
+sw1 <- read_excel("C:/P7/Outcrop_1_stratawidth.xlsx")  # Importing raw data
+
+##### Viewing plots
+
+qplot(sw1$strata, sw1$width, ylab = "Strata thickness (cm)", xlab = "Strata")+ scale_color_manual(values = c("black", "lightblue", "darkgreen"))+ theme_bw()+ theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14))+geom_point(size = 0)+labs(colour="Clast type")+geom_bar(stat="identity", alpha = 1, fill = alpha(c("grey"), .3))+guides(color = guide_legend(override.aes = list(alpha = 0.0)))
+
+summary(sw1$width[sw1$strata=="s1"]) # Viewing summary statistics
+summary(sw1$width[sw1$strata=="s2"])
+
+sw <- read_excel("C:/P7/Strata_width.xlsx")  # Importing raw data
+
+qplot(sw$strata, sw$width, ylab = "Strata thickness (cm)", xlab = "Strata", col =sw$clasttype)+ labs(colour = "clasttype")+ scale_color_manual(values = c("black", "lightblue", "darkgreen"))+ theme_bw()+ theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14))+geom_point(size = 0)+labs(colour="Clast type")+geom_bar(stat="identity", alpha = 1, fill = alpha(c("black", "lightblue", "darkgreen", "lightblue", "lightblue", "lightblue", "lightblue"), .3))+guides(color = guide_legend(override.aes = list(alpha = 0.0)))
+
+
+summary(sw$width[sw$strata=="s1"]) # Viewing summary statistics
+summary(sw$width[sw$strata=="s2"])
+summary(sw$width[sw$strata=="s3"])
+summary(sw$width[sw$strata=="s4"])
+summary(sw$width[sw$strata=="s5"])
+summary(sw$width[sw$strata=="s6"])
+summary(sw$width[sw$strata=="s7"])
+
+sw3 <- read_excel("C:/P7/outcrop_3_stratawidth.xlsx")  # Importing raw data
+
+##### Viewing plots
+
+qplot(sw3$strata, sw3$width, ylab = "Strata thickness (cm)", xlab = "Strata")+ scale_color_manual(values = c("black", "lightblue", "darkgreen"))+ theme_bw()+ theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14))+geom_point(size = 0)+labs(colour="Clast type")+geom_bar(stat="identity", alpha = 1, fill = alpha(c("grey"), .3))+guides(color = guide_legend(override.aes = list(alpha = 0.0)))
+
+summary(sw3$width[sw3$strata=="s2"])
+
+allclast <- read_excel("C:/P7/All_clast_length_width.xlsx") # Importing raw data
+
+##### Viewing plot
+
+qplot(allclast$clastlength, allclast$clastwidth, xlab = "Clast length (mm)", ylab = "Clast width (mm)")+ annotate(geom="text", x=100, y=170, label=expression("               R-squared: 0.8445                P-value: 2.2"^"-16"), color="black")+
+  geom_point(size = 2, colour = "black")+geom_point(size = 1, colour = "lightblue")+ theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), axis.title=element_text(size=14,face="bold"), axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14), legend.position="none")+ geom_smooth(method = "lm", se = FALSE, col = "red")
+
+summary(lm(allclast$clastlength~allclast$clastwidth)) # Viewing summary statistics
+summary(allclast)
+
+mean(d7$clastsize)    # d7 is outcrop one      # Viewing mean values of particular variables
+mean(d4$clastsize)     #d4 is outcrop two
+mean(d5$clastsize)    # d5 is outcrop three
+mean(d6$clastsize)    # d6 is outcrop four
+
+
+
+```
+
+
+
